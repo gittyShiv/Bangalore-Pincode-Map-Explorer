@@ -38,6 +38,8 @@ npm run dev
 
 Open the Vite URL printed in the terminal, usually `http://127.0.0.1:5173`.
 
+For Vercel or any remote deployment, set `VITE_API_BASE_URL` in the frontend project to the deployed backend URL, for example `https://your-backend.vercel.app`.
+
 ## API
 
 - `GET /api/areas` - returns the full dataset and summary counts
@@ -56,6 +58,7 @@ Open the Vite URL printed in the terminal, usually `http://127.0.0.1:5173`.
 - Area lookup supports partial matching, so `Korama` resolves to `Koramangala`.
 - The UI keeps the map dominant and uses the sidebar for filtering and quick navigation.
 - No standalone `pincodes.json` file is needed anymore; the backend ships with the dataset hardcoded in code.
+- If the deployed frontend shows `Unable to load the dataset`, the backend URL is not configured in `VITE_API_BASE_URL`.
 
 ## Live Demo
 

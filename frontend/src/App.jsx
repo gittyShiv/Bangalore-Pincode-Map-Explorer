@@ -5,7 +5,15 @@ import SearchBar from './components/SearchBar'
 import Sidebar from './components/Sidebar'
 import { CORPORATION_COLORS, normalizeText } from './constants'
 
-const API_BASE = ''
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+
+function apiUrl(path) {
+    if (!API_BASE) {
+        return path
+    }
+
+    return `${API_BASE}${path}`
+}
 
 function buildCorporationVisibility() {
     return Object.keys(CORPORATION_COLORS).reduce((accumulator, corporation) => {
@@ -31,7 +39,7 @@ function App() {
 
         async function loadAreas() {
             try {
-                const response = await fetch(`${API_BASE}/api/areas`)
+                const response = await fetch(apiUrl('/api/areas'))
                 if (!response.ok) {
                     throw new Error('Unable to load the dataset')
                 }
@@ -79,8 +87,8 @@ function App() {
 
         const endpoint =
             nextMode === 'pincode'
-                ? `${API_BASE}/api/lookup?pincode=${encodeURIComponent(trimmedQuery)}`
-                : `${API_BASE}/api/lookup?area=${encodeURIComponent(trimmedQuery)}`
+                ? apiUrl(`/api/lookup?pincode=${encodeURIComponent(trimmedQuery)}`)
+                : apiUrl(`/api/lookup?area=${encodeURIComponent(trimmedQuery)}`)
 
         try {
             const response = await fetch(endpoint)
@@ -109,7 +117,7 @@ function App() {
     async function resolveNearest(lat, lng) {
         try {
             setError('')
-            const response = await fetch(`${API_BASE}/api/nearest?lat=${lat}&lng=${lng}`)
+            const response = await fetch(apiUrl(`/api/nearest?lat=${lat}&lng=${lng}`))
             const data = await response.json()
 
             if (!response.ok) {
