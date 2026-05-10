@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar'
 import { CORPORATION_COLORS, normalizeText } from './constants'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const QUICK_SEARCHES = ['Koramangala', 'Indiranagar', 'Jayanagar', 'Whitefield', '560001']
 
 function apiUrl(path) {
     if (!API_BASE) {
@@ -78,6 +79,18 @@ function App() {
         const trimmedQuery = nextQuery.trim()
         if (!trimmedQuery) {
             setError('Enter a pincode or area name before searching.')
+            return
+        }
+
+        if (nextMode === 'pincode' && !/^\d{6}$/.test(trimmedQuery)) {
+            setError('Pincode must be exactly 6 digits.')
+            setStatus('Please enter a valid pincode to search.')
+            return
+        }
+
+        if (nextMode === 'area' && trimmedQuery.length < 2) {
+            setError('Area search needs at least 2 characters.')
+            setStatus('Please type more letters for area search.')
             return
         }
 
@@ -171,6 +184,14 @@ function App() {
         }))
     }
 
+    function handleQuickPick(value) {
+        const isPincode = /^\d{6}$/.test(value)
+        const nextMode = isPincode ? 'pincode' : 'area'
+        setMode(nextMode)
+        setQuery(value)
+        lookup(nextMode, value)
+    }
+
     const filteredAreas = useMemo(() => {
         const normalizedQuery = normalizeText(query)
         return visibleAreas.filter((record) => {
@@ -191,14 +212,26 @@ function App() {
             <div className="bg-orb orb-a" />
             <div className="bg-orb orb-b" />
 
-            <header className="hero card">
-                <div>
-                    <p className="eyebrow">Bengaluru 2026 municipal model</p>
-                    <h1>Interactive Bangalore Pincode Map Explorer</h1>
-                    <p className="hero-copy">
-                        Explore Bengaluru's localities on a live Leaflet map, click markers for details, search by pincode,
-                        or type an area name to jump to the correct corporation and pincode.
-                    </p>
+            <header className="atlas-nav card">
+                <div className="brand-wrap">
+                    <div className="brand-mark">⌖</div>
+                    <div>
+                        <p className="brand-title">Bengaluru Atlas</p>
+                        <p className="brand-sub">Pincode Explorer</p>
+                    </div>
+                </div>
+                <nav className="top-tabs" aria-label="Primary">
+                    <button type="button" className="active">Map</button>
+                    <button type="button">Areas</button>
+                    <button type="button">Insights</button>
+                    <button type="button">About</button>
+                </nav>
+            </header>
+
+            <section className="intro-strip">
+                <div className="hero-copy-wrap">
+                    <h1>Explore Bengaluru Pincodes Interactively</h1>
+                    <p className="hero-copy">Search, discover, and navigate Bengaluru localities with a map-first command center.</p>
                 </div>
 
                 <div className="hero-metrics">
@@ -215,14 +248,17 @@ function App() {
                         <strong>{overview?.corporations?.length ?? '...'}</strong>
                     </article>
                 </div>
-            </header>
+            </section>
 
             <SearchBar
                 mode={mode}
                 query={query}
                 loading={loading}
+                resultCount={results.length}
+                quickSearches={QUICK_SEARCHES}
                 status={status}
                 error={error}
+                onQuickPick={handleQuickPick}
                 onModeChange={setMode}
                 onQueryChange={setQuery}
                 onSubmit={() => lookup()}
@@ -234,6 +270,7 @@ function App() {
                     areas={areas}
                     selected={selected}
                     corporationVisibility={corporationVisibility}
+                    visibleCount={visibleAreas.length}
                     onSelectArea={handleAreaSelect}
                     onMapClick={({ lat, lng }) => resolveNearest(lat, lng)}
                 />
@@ -251,6 +288,7 @@ function App() {
                         areas={areas}
                         query={query}
                         corporationVisibility={corporationVisibility}
+                        totalAreas={areas.length}
                         onToggleCorporation={toggleCorporation}
                         onPickArea={handleAreaSelect}
                     />

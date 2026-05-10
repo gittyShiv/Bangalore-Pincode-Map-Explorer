@@ -60,7 +60,7 @@ function SelectedPulse({ selected }) {
     )
 }
 
-export default function MapView({ areas, selected, corporationVisibility, onSelectArea, onMapClick }) {
+export default function MapView({ areas, selected, corporationVisibility, visibleCount, onSelectArea, onMapClick }) {
     const visibleAreas = useMemo(
         () => areas.filter((record) => corporationVisibility[record.corporation]),
         [areas, corporationVisibility],
@@ -72,6 +72,7 @@ export default function MapView({ areas, selected, corporationVisibility, onSele
                 <div>
                     <p className="eyebrow">Map</p>
                     <h2>Bengaluru localities</h2>
+                    <p className="map-subtext">Click markers for details, or click anywhere to find the nearest locality.</p>
                 </div>
                 <div className="legend">
                     {Object.entries(corporationVisibility).map(([corporation, enabled]) => (
@@ -80,6 +81,10 @@ export default function MapView({ areas, selected, corporationVisibility, onSele
                         </span>
                     ))}
                 </div>
+            </div>
+            <div className="map-meta-row">
+                <span>{visibleCount} visible markers</span>
+                <span>{areas.length} total localities</span>
             </div>
 
             <div className="map-frame">

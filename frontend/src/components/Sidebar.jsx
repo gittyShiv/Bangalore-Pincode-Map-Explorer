@@ -1,6 +1,6 @@
 import { normalizeText } from '../constants'
 
-export default function Sidebar({ areas, query, corporationVisibility, onToggleCorporation, onPickArea }) {
+export default function Sidebar({ areas, query, corporationVisibility, totalAreas, onToggleCorporation, onPickArea }) {
     const filteredAreas = areas.filter((record) => {
         const visible = corporationVisibility[record.corporation]
         const queryText = normalizeText(query)
@@ -14,6 +14,7 @@ export default function Sidebar({ areas, query, corporationVisibility, onToggleC
                 <div>
                     <p className="eyebrow">Sidebar</p>
                     <h2>Filter areas</h2>
+                    <p className="search-hint">Showing {filteredAreas.length} of {totalAreas} localities</p>
                 </div>
             </div>
 
