@@ -62,4 +62,4 @@ For Vercel or any remote deployment, set `VITE_API_BASE_URL` in the frontend pro
 
 ## Live Demo
 
-- Not deployed yet.
+- https://bangalore-pincode-map-explorer-lvkf.vercel.app/
