@@ -14,7 +14,7 @@ A full-stack React + FastAPI app for exploring Bengaluru pincodes and localities
 
 - `frontend/` - React + Vite app with Leaflet map UI
 - `backend/` - FastAPI REST API
-- `pincodes.json` - source dataset used by the backend
+- The Bengaluru dataset is embedded directly in `backend/main.py`
 
 ## Run Locally
 
@@ -23,7 +23,7 @@ A full-stack React + FastAPI app for exploring Bengaluru pincodes and localities
 ```bash
 cd backend
 python -m venv .venv
-.venv\Scripts\activate
+source .venv/Scripts/activate
 pip install -r requirements.txt
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
@@ -55,6 +55,7 @@ Open the Vite URL printed in the terminal, usually `http://127.0.0.1:5173`.
 - The backend returns arrays for matches so duplicate pincodes in the dataset are handled safely.
 - Area lookup supports partial matching, so `Korama` resolves to `Koramangala`.
 - The UI keeps the map dominant and uses the sidebar for filtering and quick navigation.
+- No standalone `pincodes.json` file is needed anymore; the backend ships with the dataset hardcoded in code.
 
 ## Live Demo
 
